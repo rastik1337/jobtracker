@@ -22,6 +22,14 @@ next record.
 - LiteDB
 - Should run on both Windows and Linux (Ubuntu Gnome)
 
+## Structure
+
+```mermaid
+erDiagram
+    PROJECT ||--o{ TIME_RECORD : contains
+    TIME_RECORD }o--o| LABEL : tagged_with
+```
+
 ## Features
 
 - CRUD operations on time records, projects and labels
