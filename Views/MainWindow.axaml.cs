@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace jobtracker;
+namespace JobTracker.Views;
 
 public partial class MainWindow : Window
 {
