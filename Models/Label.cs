@@ -5,6 +5,6 @@ namespace JobTracker.Models;
 public class Label
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
     public string ColorHex { get; set; } = "#808080";
 }
