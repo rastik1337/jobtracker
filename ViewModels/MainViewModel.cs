@@ -57,6 +57,8 @@ public partial class MainViewModel : ViewModelBase
         if (IsTracking)
         {
             _timer.Start();
+            SelectedProjectName = Projects.FirstOrDefault(X => X.Id == ActiveRecord!.ProjectId)!.Name;
+            SelectedLabelName = Labels.FirstOrDefault(X => X.Id == ActiveRecord!.LabelId)!.Name;
         }
         else
         {
