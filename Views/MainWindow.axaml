@@ -8,7 +8,7 @@
 		x:Class="JobTracker.Views.MainWindow"
 		x:DataType="vm:MainViewModel"
 		Title="JobTracker"
-		Width="640" Height="480"
+		Width="640" Height="640"
 		CanResize="False"
 		WindowStartupLocation="CenterScreen"
 		Background="#ffedce">
