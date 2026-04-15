@@ -1,16 +1,53 @@
 <UserControl xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="jobtracker.Controls">
-	<StackPanel
-	Margin="32"
-	HorizontalAlignment="Center"
-	VerticalAlignment="Bottom"
-	TextElement.FontSize="16" TextElement.FontWeight="SemiBold">
-		<Button
-		HorizontalAlignment="Center"
-		Background="#ffc193">Start Tracking</Button>
+			 xmlns:vm="using:JobTracker.ViewModels"
+			 x:Class="jobtracker.Controls"
+			 x:DataType="vm:MainViewModel">
+
+	<StackPanel Margin="32" Spacing="16">
+
+		<StackPanel Spacing="8" IsVisible="{Binding !IsTracking}">
+
+			<UniformGrid Columns="2">
+
+				<StackPanel Margin="0,0,8,0">
+					<TextBlock Text="Project" FontSize="16" Margin="0,0,0,5" Opacity="0.6"/>
+					<ComboBox ItemsSource="{Binding Projects}"
+							  Text="{Binding SelectedProjectName}"
+							  IsEditable="True"
+							  IsTextSearchEnabled="True"
+							  DisplayMemberBinding="{Binding Name}"
+							  HorizontalAlignment="Stretch"/>
+				</StackPanel>
+
+				<StackPanel Margin="8,0,0,0">
+					<TextBlock Text="Label" FontSize="16" Margin="0,0,0,5" Opacity="0.6"/>
+					<ComboBox ItemsSource="{Binding Labels}"
+							  Text="{Binding SelectedLabelName}"
+							  IsEditable="True"
+							  IsTextSearchEnabled="True"
+							  DisplayMemberBinding="{Binding Name}"
+							  HorizontalAlignment="Stretch"/>
+				</StackPanel>
+
+			</UniformGrid>
+
+			<Button Command="{Binding StartTrackingCommand}"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Center"
+					FontWeight="Medium" Background="#ffc193" Padding="0,16">
+				Start
+			</Button>
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal" Spacing="8"
+					HorizontalAlignment="Center"
+					IsVisible="{Binding IsTracking}">
+			<Button Command="{Binding StopTrackingCommand}"
+					FontWeight="Medium" Background="#ffc193" Padding="32,16">Stop</Button>
+			<Button Command="{Binding DiscardTrackingCommand}"
+					FontWeight="Medium" Background="#ff3737" Padding="32,16">Discard</Button>
+		</StackPanel>
+
 	</StackPanel>
 </UserControl>
