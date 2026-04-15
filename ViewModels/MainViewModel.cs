@@ -37,6 +37,11 @@ public partial class MainViewModel : ViewModelBase
     !string.IsNullOrWhiteSpace(SelectedProjectName) &&
     !string.IsNullOrWhiteSpace(SelectedLabelName);
 
+    public record ProjectSummary(string Name, TimeSpan TotalTime);
+
+    [ObservableProperty]
+    private ObservableCollection<ProjectSummary> _projectSummaries = new();
+
     public MainViewModel(JobTrackerRepository repository)
     {
         _repository = repository;
@@ -47,6 +52,7 @@ public partial class MainViewModel : ViewModelBase
         ActiveRecord = _repository.GetActiveTimeRecord();
         Projects = new ObservableCollection<Project>(_repository.GetAllProjects());
         Labels = new ObservableCollection<Label>(_repository.GetAllLabels());
+        LoadProjectSummaries();
 
         if (IsTracking)
         {
@@ -105,6 +111,7 @@ public partial class MainViewModel : ViewModelBase
         _timer.Stop();
         ActiveRecord = null;
         ElapsedTime = TimeSpan.Zero;
+        LoadProjectSummaries();
     }
 
     private void UpdateElapsedTime()
@@ -113,5 +120,20 @@ public partial class MainViewModel : ViewModelBase
         {
             ElapsedTime = DateTime.Now - ActiveRecord.TimeStart;
         }
+    }
+
+    private void LoadProjectSummaries()
+    {
+        var summaries = _repository.GetAllProjects().Select(p =>
+        {
+            var records = _repository.GetRecordsForProject(p.Id);
+            var totalTicks = records
+                .Where(r => r.TimeEnd.HasValue)
+                .Sum(r => (r.TimeEnd!.Value - r.TimeStart).Ticks);
+
+            return new ProjectSummary(p.Name, new TimeSpan(totalTicks));
+        }).OrderByDescending(r => r.TotalTime);
+
+        ProjectSummaries = new ObservableCollection<ProjectSummary>(summaries);
     }
 }

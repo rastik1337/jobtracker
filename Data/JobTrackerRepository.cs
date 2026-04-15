@@ -78,6 +78,10 @@ public class JobTrackerRepository : IDisposable
 
     public IEnumerable<Project> GetAllProjects() => _projects.FindAll();
     public Project InsertProject(Project project) { _projects.Insert(project); return project; }
+    public IEnumerable<TimeRecord> GetRecordsForProject(int projectId)
+    {
+        return _timeRecords.Find(x => x.ProjectId == projectId);
+    }
 
     public IEnumerable<Label> GetAllLabels() => _labels.FindAll();
     public Label InsertLabel(Label label) { _labels.Insert(label); return label; }

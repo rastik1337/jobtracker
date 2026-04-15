@@ -32,11 +32,11 @@
 			<DockPanel IsVisible="{Binding !IsTracking}">
 				<TextBlock DockPanel.Dock="Top" Text="Overview" FontSize="24" FontWeight="Bold" Margin="0,0,0,16"/>
 				<ScrollViewer>
-					<ListBox ItemsSource="{Binding Projects}" Background="#ffc193" BorderThickness="0" CornerRadius="8">
+					<ListBox ItemsSource="{Binding ProjectSummaries}" Background="#ffc193" BorderThickness="0" CornerRadius="8">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<DockPanel Margin="10">
-									<TextBlock FontSize="16" Text="0.0h" DockPanel.Dock="Right" FontWeight="Bold"/>
+									<TextBlock FontSize="16" Text="{Binding TotalTime, StringFormat=\{0:hh\\:mm\\:ss\}}" DockPanel.Dock="Right" FontWeight="Bold"/>
 									<TextBlock FontSize="16" Text="{Binding Name}"/>
 								</DockPanel>
 							</DataTemplate>
