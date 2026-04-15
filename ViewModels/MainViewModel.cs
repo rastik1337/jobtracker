@@ -58,6 +58,15 @@ public partial class MainViewModel : ViewModelBase
         {
             _timer.Start();
         }
+        else
+        {
+            var lastRecord = _repository.GetLastRecord();
+            if (lastRecord != null)
+            {
+                SelectedProjectName = Projects.FirstOrDefault(X => X.Id == lastRecord.ProjectId)!.Name;
+                SelectedLabelName = Labels.FirstOrDefault(X => X.Id == lastRecord.LabelId)!.Name;
+            }
+        }
     }
 
     [RelayCommand(CanExecute = nameof(CanStartTracking))]

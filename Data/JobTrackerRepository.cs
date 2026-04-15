@@ -88,6 +88,12 @@ public class JobTrackerRepository : IDisposable
 
     public IEnumerable<TimeRecord> GetAllTimeRecords() => _timeRecords.FindAll();
     public void DeleteTimeRecord(int id) => _timeRecords.Delete(id);
+    public TimeRecord? GetLastRecord()
+    {
+        return _timeRecords.Query()
+            .OrderByDescending(x => x.TimeStart)
+            .FirstOrDefault();
+    }
 
     public void Dispose()
     {
