@@ -1,6 +1,4 @@
-﻿using LiteDB;
-
-namespace JobTracker.Models;
+﻿namespace JobTracker.Models;
 
 public class Label
 {
