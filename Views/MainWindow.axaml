@@ -9,6 +9,7 @@
 		x:DataType="vm:MainViewModel"
 		Title="JobTracker"
 		Width="640" Height="640"
+		Icon="/Assets/alarm-clock.ico"
 		CanResize="False"
 		WindowStartupLocation="CenterScreen"
 		Background="#ffedce">

@@ -12,4 +12,11 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="/Assets/alarm-clock-white.ico" 
+                      ToolTipText="JobTracker" />
+        </TrayIcons>
+    </TrayIcon.Icons>
 </Application>
