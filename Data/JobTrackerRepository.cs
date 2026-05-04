@@ -39,8 +39,8 @@ public class JobTrackerRepository : IDisposable
 
     public TimeRecord StartTimeRecord(int projectId, int labelId)
     {
-        var existingActive = GetActiveTimeRecord();
-        if (existingActive != null)
+        var active = GetActiveTimeRecord();
+        if (active != null)
         {
             throw new InvalidOperationException("A time record is already active. Please stop or discard it first.");
         }
