@@ -3,13 +3,9 @@
 			 xmlns:vm="using:JobTracker.ViewModels"
 			 x:Class="jobtracker.Controls"
 			 x:DataType="vm:MainViewModel">
-
 	<StackPanel Margin="32" Spacing="16">
-
 		<StackPanel Spacing="8" IsVisible="{Binding !IsTracking}">
-
 			<UniformGrid Columns="2">
-
 				<StackPanel Margin="0,0,8,0">
 					<TextBlock Text="Project" FontSize="16" Margin="0,0,0,5" Opacity="0.6"/>
 					<ComboBox ItemsSource="{Binding Projects}"
@@ -29,7 +25,6 @@
 							  DisplayMemberBinding="{Binding Name}"
 							  HorizontalAlignment="Stretch"/>
 				</StackPanel>
-
 			</UniformGrid>
 
 			<Button Command="{Binding StartTrackingCommand}"
@@ -49,6 +44,5 @@
 					Classes="button-discard"
 					FontWeight="Medium" Background="#FF8383" Padding="32,16">Discard</Button>
 		</StackPanel>
-
 	</StackPanel>
 </UserControl>
