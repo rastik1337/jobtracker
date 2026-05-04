@@ -35,7 +35,7 @@
 			<Button Command="{Binding StartTrackingCommand}"
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Center"
-					FontWeight="Medium" Background="#ffc193" Padding="0,16">
+					FontWeight="Medium" Background="#FFC193" Padding="0,16">
 				Start
 			</Button>
 		</StackPanel>
@@ -44,9 +44,10 @@
 					HorizontalAlignment="Center"
 					IsVisible="{Binding IsTracking}">
 			<Button Command="{Binding StopTrackingCommand}"
-					FontWeight="Medium" Background="#ffc193" Padding="32,16">Stop</Button>
+					FontWeight="Medium" Background="#FFC193" Padding="32,16">Stop</Button>
 			<Button Command="{Binding DiscardTrackingCommand}"
-					FontWeight="Medium" Background="#ff3737" Padding="32,16">Discard</Button>
+					Classes="button-discard"
+					FontWeight="Medium" Background="#FF8383" Padding="32,16">Discard</Button>
 		</StackPanel>
 
 	</StackPanel>

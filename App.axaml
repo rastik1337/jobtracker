@@ -1,22 +1,43 @@
 <Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="JobTracker.App"
-             xmlns:local="using:JobTracker"
-             RequestedThemeVariant="Light">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 x:Class="JobTracker.App"
+			 xmlns:local="using:JobTracker"
+			 RequestedThemeVariant="Light">
 
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
-  
-    <Application.Styles>
-        <FluentTheme />
-    </Application.Styles>
+	<Application.DataTemplates>
+		<local:ViewLocator/>
+	</Application.DataTemplates>
 
-    <TrayIcon.Icons>
-        <TrayIcons>
-            <TrayIcon Icon="/Assets/alarm-clock-white.ico" 
-                      ToolTipText="JobTracker" />
-        </TrayIcons>
-    </TrayIcon.Icons>
+	<Application.Styles>
+		<FluentTheme>
+			<FluentTheme.Palettes>
+				<ColorPaletteResources x:Key="Light" Accent="#FF8383" RegionColor="#ffedce" />
+			</FluentTheme.Palettes>
+		</FluentTheme>
+
+		<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter, ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#FF9A4D"/>
+		</Style>
+		<Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter, ListBoxItem:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#FF760D"/>
+		</Style>
+
+		<Style Selector="ListBoxItem:selected:not(:pointerover):not(:pressed) /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#FF872B"/>
+		</Style>
+
+		<Style Selector="Button.button-discard:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#FF3737"/>
+		</Style>
+		<Style Selector="Button.button-discard:pressed /template/ ContentPresenter#PART_ContentPresenter">
+			<Setter Property="Background" Value="#FF2121"/>
+		</Style>
+	</Application.Styles>
+
+	<TrayIcon.Icons>
+		<TrayIcons>
+			<TrayIcon Icon="/Assets/alarm-clock-white.ico"
+					  ToolTipText="JobTracker" />
+		</TrayIcons>
+	</TrayIcon.Icons>
 </Application>
