@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:vm="using:JobTracker.ViewModels"
+			 x:Class="jobtracker.Content"
+			 x:DataType="vm:MainViewModel">
+	<Panel Margin="32">
+		<StackPanel IsVisible="{Binding IsTracking}" VerticalAlignment="Center" Spacing="8">
+			<TextBlock HorizontalAlignment="Center"
+					   FontSize="16"
+					   FontWeight="SemiBold"
+					   Opacity="0.8">
+				<TextBlock.Text>
+					<MultiBinding StringFormat="{}{0} > {1}">
+						<Binding Path="SelectedProjectName" />
+						<Binding Path="SelectedLabelName" />
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
+
+			<TextBlock Text="{Binding ElapsedTime, StringFormat=\{0:hh\\:mm\\:ss\}}"
+					   FontSize="64"
+					   FontWeight="Bold"
+					   HorizontalAlignment="Center"/>
+		</StackPanel>
+
+		<DockPanel IsVisible="{Binding !IsTracking}">
+			<TextBlock DockPanel.Dock="Top" Text="Overview" FontSize="24" FontWeight="Bold" Margin="0,0,0,16"/>
+			<ScrollViewer AllowAutoHide="False">
+				<ListBox ItemsSource="{Binding ProjectSummaries}" Background="#ffc193" BorderThickness="0" CornerRadius="8">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<DockPanel Margin="10">
+								<TextBlock FontSize="20" Text="{Binding TotalTime, StringFormat=\{0:hh\\:mm\\:ss\}}" DockPanel.Dock="Right" FontWeight="Bold"/>
+								<TextBlock FontSize="16" Text="{Binding Name}" FontWeight="SemiBold"/>
+							</DockPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</ScrollViewer>
+		</DockPanel>
+	</Panel>
+</UserControl>
