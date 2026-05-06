@@ -104,6 +104,17 @@ public class JobTrackerRepository : IDisposable
 
         _timeRecords.DeleteMany(x => x.ProjectId == id);
         _projects.Delete(id);
+
+        var usedLabels = new HashSet<int>();
+        foreach (var record in _timeRecords.FindAll())
+        {
+            usedLabels.Add(record.LabelId);
+        }
+        foreach (var label in _labels.FindAll())
+        {
+            if (!usedLabels.Contains(label.Id))
+                _labels.Delete(label.Id);
+        }
     }
 
     public IEnumerable<Label> GetAllLabels() => _labels.FindAll();

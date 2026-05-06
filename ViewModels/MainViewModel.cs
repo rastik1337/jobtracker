@@ -233,6 +233,26 @@ public partial class MainViewModel : ViewModelBase
             .OrderByDescending(r => r.TotalTime);
 
         ProjectSummaries = new ObservableCollection<ProjectSummary>(summaries);
+        RefreshLabels();
+    }
+
+    private void RefreshLabels()
+    {
+        Labels.Clear();
+        foreach (var label in _repository.GetAllLabels())
+        {
+            Labels.Add(label);
+        }
+        if (
+            Labels
+                .AsQueryable()
+                .FirstOrDefault(x =>
+                    x.Name.Equals(SelectedLabelName, StringComparison.OrdinalIgnoreCase)
+                ) == null
+        )
+        {
+            SelectedLabelName = string.Empty;
+        }
     }
 
     private void RequestConfirmation(string message, Action onConfirm)
