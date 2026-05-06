@@ -34,8 +34,8 @@ public partial class MainViewModel : ViewModelBase
     private string _selectedLabelName = string.Empty;
 
     private bool CanStartTracking =>
-    !string.IsNullOrWhiteSpace(SelectedProjectName) &&
-    !string.IsNullOrWhiteSpace(SelectedLabelName);
+        !string.IsNullOrWhiteSpace(SelectedProjectName)
+        && !string.IsNullOrWhiteSpace(SelectedLabelName);
 
     public record ProjectSummary(string Name, TimeSpan TotalTime);
 
@@ -57,7 +57,9 @@ public partial class MainViewModel : ViewModelBase
         if (IsTracking)
         {
             _timer.Start();
-            SelectedProjectName = Projects.FirstOrDefault(X => X.Id == ActiveRecord!.ProjectId)!.Name;
+            SelectedProjectName = Projects
+                .FirstOrDefault(X => X.Id == ActiveRecord!.ProjectId)!
+                .Name;
             SelectedLabelName = Labels.FirstOrDefault(X => X.Id == ActiveRecord!.LabelId)!.Name;
         }
         else
@@ -65,7 +67,9 @@ public partial class MainViewModel : ViewModelBase
             var lastRecord = _repository.GetLastRecord();
             if (lastRecord != null)
             {
-                SelectedProjectName = Projects.FirstOrDefault(X => X.Id == lastRecord.ProjectId)!.Name;
+                SelectedProjectName = Projects
+                    .FirstOrDefault(X => X.Id == lastRecord.ProjectId)!
+                    .Name;
                 SelectedLabelName = Labels.FirstOrDefault(X => X.Id == lastRecord.LabelId)!.Name;
             }
         }
@@ -81,7 +85,9 @@ public partial class MainViewModel : ViewModelBase
 
         var project = _repository
             .GetAllProjects()
-            .FirstOrDefault(p => p.Name.Equals(SelectedProjectName, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(p =>
+                p.Name.Equals(SelectedProjectName, StringComparison.OrdinalIgnoreCase)
+            );
 
         if (project == null)
         {
@@ -91,7 +97,9 @@ public partial class MainViewModel : ViewModelBase
 
         var label = _repository
             .GetAllLabels()
-            .FirstOrDefault(l => l.Name.Equals(SelectedLabelName, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(l =>
+                l.Name.Equals(SelectedLabelName, StringComparison.OrdinalIgnoreCase)
+            );
 
         if (label == null)
         {
@@ -117,6 +125,7 @@ public partial class MainViewModel : ViewModelBase
         _repository.DiscardActiveTimeRecord();
         Reset();
     }
+
     private void Reset()
     {
         _timer.Stop();
@@ -135,15 +144,18 @@ public partial class MainViewModel : ViewModelBase
 
     private void LoadProjectSummaries()
     {
-        var summaries = _repository.GetAllProjects().Select(p =>
-        {
-            var records = _repository.GetRecordsForProject(p.Id, null);
-            var totalTicks = records
-                .Where(r => r.TimeEnd.HasValue)
-                .Sum(r => (r.TimeEnd!.Value - r.TimeStart).Ticks);
+        var summaries = _repository
+            .GetAllProjects()
+            .Select(p =>
+            {
+                var records = _repository.GetRecordsForProject(p.Id, null);
+                var totalTicks = records
+                    .Where(r => r.TimeEnd.HasValue)
+                    .Sum(r => (r.TimeEnd!.Value - r.TimeStart).Ticks);
 
-            return new ProjectSummary(p.Name, new TimeSpan(totalTicks));
-        }).OrderByDescending(r => r.TotalTime);
+                return new ProjectSummary(p.Name, new TimeSpan(totalTicks));
+            })
+            .OrderByDescending(r => r.TotalTime);
 
         ProjectSummaries = new ObservableCollection<ProjectSummary>(summaries);
     }
