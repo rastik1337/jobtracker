@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using LiteDB;
 using JobTracker.Models;
+using LiteDB;
 
 namespace JobTracker.Data;
 
@@ -42,14 +42,16 @@ public class JobTrackerRepository : IDisposable
         var active = GetActiveTimeRecord();
         if (active != null)
         {
-            throw new InvalidOperationException("A time record is already active. Please stop or discard it first.");
+            throw new InvalidOperationException(
+                "A time record is already active. Please stop or discard it first."
+            );
         }
 
         var newRecord = new TimeRecord
         {
             ProjectId = projectId,
             LabelId = labelId,
-            TimeStart = DateTime.Now
+            TimeStart = DateTime.Now,
         };
 
         _timeRecords.Insert(newRecord);
@@ -77,22 +79,33 @@ public class JobTrackerRepository : IDisposable
     }
 
     public IEnumerable<Project> GetAllProjects() => _projects.FindAll();
-    public Project InsertProject(Project project) { _projects.Insert(project); return project; }
+
+    public Project InsertProject(Project project)
+    {
+        _projects.Insert(project);
+        return project;
+    }
+
     public IEnumerable<TimeRecord> GetRecordsForProject(int projectId)
     {
         return _timeRecords.Find(x => x.ProjectId == projectId);
     }
 
     public IEnumerable<Label> GetAllLabels() => _labels.FindAll();
-    public Label InsertLabel(Label label) { _labels.Insert(label); return label; }
+
+    public Label InsertLabel(Label label)
+    {
+        _labels.Insert(label);
+        return label;
+    }
 
     public IEnumerable<TimeRecord> GetAllTimeRecords() => _timeRecords.FindAll();
+
     public void DeleteTimeRecord(int id) => _timeRecords.Delete(id);
+
     public TimeRecord? GetLastRecord()
     {
-        return _timeRecords.Query()
-            .OrderByDescending(x => x.TimeStart)
-            .FirstOrDefault();
+        return _timeRecords.Query().OrderByDescending(x => x.TimeStart).FirstOrDefault();
     }
 
     public void Dispose()
