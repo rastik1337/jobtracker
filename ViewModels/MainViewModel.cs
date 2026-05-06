@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia.Threading;
@@ -49,6 +50,31 @@ public partial class MainViewModel : ViewModelBase
     private string _confirmMessage = string.Empty;
     private Action? _onConfirmAction;
 
+    public enum DateRange
+    {
+        AllTime,
+        ThreeMonths,
+        Month,
+        Week,
+    }
+
+    [ObservableProperty]
+    private DateRange _selectedDateRange = DateRange.AllTime;
+
+    [ObservableProperty]
+    private Project? _selectedProjectStats;
+
+    public record LabelSummary(string Name, TimeSpan TotalTime);
+
+    [ObservableProperty]
+    private ObservableCollection<LabelSummary> _labelSummaries = new();
+
+    public IEnumerable<DateRange> DateRanges => Enum.GetValues<DateRange>();
+
+    partial void OnSelectedProjectStatsChanged(Project? value) => UpdateStatistics();
+
+    partial void OnSelectedDateRangeChanged(DateRange value) => UpdateStatistics();
+
     public MainViewModel(JobTrackerRepository repository)
     {
         _repository = repository;
@@ -80,6 +106,36 @@ public partial class MainViewModel : ViewModelBase
                 SelectedLabelName = Labels.FirstOrDefault(X => X.Id == lastRecord.LabelId)!.Name;
             }
         }
+    }
+
+    private void UpdateStatistics()
+    {
+        if (SelectedProjectStats == null)
+        {
+            LabelSummaries.Clear();
+            return;
+        }
+
+        DateTime? from = SelectedDateRange switch
+        {
+            DateRange.Week => DateTime.Now.AddDays(-7),
+            DateRange.Month => DateTime.Now.AddMonths(-1),
+            DateRange.ThreeMonths => DateTime.Now.AddMonths(-3),
+            _ => null,
+        };
+
+        var records = _repository.GetRecordsForProject(SelectedProjectStats.Id, from);
+        var labelGroups = records
+            .GroupBy(r => r.LabelId)
+            .Select(g =>
+            {
+                var labelName = _repository.GetLabel(g.Key)?.Name ?? "Unknown label";
+                var totalTicks = g.Sum(r => r.Duration.Ticks);
+                return new LabelSummary(labelName, new TimeSpan(totalTicks));
+            })
+            .OrderByDescending(x => x.TotalTime);
+
+        LabelSummaries = new ObservableCollection<LabelSummary>(labelGroups);
     }
 
     [RelayCommand(CanExecute = nameof(CanStartTracking))]
@@ -129,8 +185,14 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     public void DiscardTracking()
     {
-        _repository.DiscardActiveTimeRecord();
-        Reset();
+        RequestConfirmation(
+            "Are you sure you want to discard the current tracked time?",
+            () =>
+            {
+                _repository.DiscardActiveTimeRecord();
+                Reset();
+            }
+        );
     }
 
     private void Reset()
@@ -183,4 +245,50 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand]
     public void CancelAction() => IsConfirmOpen = false;
+
+    [RelayCommand]
+    public void DeleteProject(Project project)
+    {
+        RequestConfirmation(
+            $"Are you sure you want to delete project '{project.Name}' and all its recorded time?",
+            () =>
+            {
+                try
+                {
+                    _repository.DeleteProject(project.Id);
+                    Projects.Remove(project);
+                    if (SelectedProjectStats == project)
+                        SelectedProjectStats = null;
+                    LoadProjectSummaries();
+                }
+                catch (Exception ex)
+                {
+                    ConfirmMessage = $"Failed to delete project: {ex.Message}";
+                    IsConfirmOpen = true;
+                }
+            }
+        );
+    }
+
+    [RelayCommand]
+    public void DeleteLabel(Label label)
+    {
+        RequestConfirmation(
+            $"Are you sure you want to delete label '{label.Name}' and all its recorded time?",
+            () =>
+            {
+                try
+                {
+                    _repository.DeleteLabel(label.Id);
+                    Labels.Remove(label);
+                    UpdateStatistics();
+                }
+                catch (Exception ex)
+                {
+                    ConfirmMessage = $"Failed to delete label: {ex.Message}";
+                    IsConfirmOpen = true;
+                }
+            }
+        );
+    }
 }

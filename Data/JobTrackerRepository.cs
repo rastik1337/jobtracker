@@ -108,6 +108,8 @@ public class JobTrackerRepository : IDisposable
 
     public IEnumerable<Label> GetAllLabels() => _labels.FindAll();
 
+    public Label? GetLabel(int id) => _labels.FindById(id);
+
     public Label InsertLabel(Label label)
     {
         _labels.Insert(label);
