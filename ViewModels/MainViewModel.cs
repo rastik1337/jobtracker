@@ -42,7 +42,6 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<ProjectSummary> _projectSummaries = new();
 
-
     [ObservableProperty]
     private bool _isConfirmOpen;
 
