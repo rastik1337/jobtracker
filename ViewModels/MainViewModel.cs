@@ -42,6 +42,14 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<ProjectSummary> _projectSummaries = new();
 
+
+    [ObservableProperty]
+    private bool _isConfirmOpen;
+
+    [ObservableProperty]
+    private string _confirmMessage = string.Empty;
+    private Action? _onConfirmAction;
+
     public MainViewModel(JobTrackerRepository repository)
     {
         _repository = repository;
@@ -159,4 +167,21 @@ public partial class MainViewModel : ViewModelBase
 
         ProjectSummaries = new ObservableCollection<ProjectSummary>(summaries);
     }
+
+    private void RequestConfirmation(string message, Action onConfirm)
+    {
+        ConfirmMessage = message;
+        _onConfirmAction = onConfirm;
+        IsConfirmOpen = true;
+    }
+
+    [RelayCommand]
+    public void ConfirmAction()
+    {
+        _onConfirmAction?.Invoke();
+        IsConfirmOpen = false;
+    }
+
+    [RelayCommand]
+    public void CancelAction() => IsConfirmOpen = false;
 }
