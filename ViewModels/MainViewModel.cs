@@ -62,7 +62,7 @@ public partial class MainViewModel : ViewModelBase
     private DateRange _selectedDateRange = DateRange.AllTime;
 
     [ObservableProperty]
-    private Project? _selectedProjectStats;
+    private Project? _statsSelectedProject;
 
     public record LabelSummary(string Name, TimeSpan TotalTime);
 
@@ -71,7 +71,7 @@ public partial class MainViewModel : ViewModelBase
 
     public IEnumerable<DateRange> DateRanges => Enum.GetValues<DateRange>();
 
-    partial void OnSelectedProjectStatsChanged(Project? value) => UpdateStatistics();
+    partial void OnStatsSelectedProjectChanged(Project? value) => UpdateStatistics();
 
     partial void OnSelectedDateRangeChanged(DateRange value) => UpdateStatistics();
 
@@ -110,7 +110,7 @@ public partial class MainViewModel : ViewModelBase
 
     private void UpdateStatistics()
     {
-        if (SelectedProjectStats == null)
+        if (StatsSelectedProject == null)
         {
             LabelSummaries.Clear();
             return;
@@ -124,7 +124,7 @@ public partial class MainViewModel : ViewModelBase
             _ => null,
         };
 
-        var records = _repository.GetRecordsForProject(SelectedProjectStats.Id, from);
+        var records = _repository.GetRecordsForProject(StatsSelectedProject.Id, from);
         var labelGroups = records
             .GroupBy(r => r.LabelId)
             .Select(g =>
@@ -257,8 +257,8 @@ public partial class MainViewModel : ViewModelBase
                 {
                     _repository.DeleteProject(project.Id);
                     Projects.Remove(project);
-                    if (SelectedProjectStats == project)
-                        SelectedProjectStats = null;
+                    if (StatsSelectedProject == project)
+                        StatsSelectedProject = null;
                     LoadProjectSummaries();
                 }
                 catch (Exception ex)
