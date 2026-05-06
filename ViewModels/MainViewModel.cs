@@ -38,7 +38,7 @@ public partial class MainViewModel : ViewModelBase
         !string.IsNullOrWhiteSpace(SelectedProjectName)
         && !string.IsNullOrWhiteSpace(SelectedLabelName);
 
-    public record ProjectSummary(string Name, TimeSpan TotalTime);
+    public record ProjectSummary(int Id, string Name, TimeSpan TotalTime);
 
     [ObservableProperty]
     private ObservableCollection<ProjectSummary> _projectSummaries = new();
@@ -62,7 +62,10 @@ public partial class MainViewModel : ViewModelBase
     private DateRange _selectedDateRange = DateRange.AllTime;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsStatsProjectSelected))]
     private Project? _statsSelectedProject;
+
+    public bool IsStatsProjectSelected => StatsSelectedProject != null;
 
     public record LabelSummary(string Name, TimeSpan TotalTime);
 
@@ -100,10 +103,13 @@ public partial class MainViewModel : ViewModelBase
             var lastRecord = _repository.GetLastRecord();
             if (lastRecord != null)
             {
-                SelectedProjectName = Projects
-                    .FirstOrDefault(X => X.Id == lastRecord.ProjectId)!
-                    .Name;
+                var project =
+                    Projects.FirstOrDefault(X => X.Id == lastRecord.ProjectId)
+                    ?? throw new Exception("Record exists but its project does not");
+
+                SelectedProjectName = project!.Name;
                 SelectedLabelName = Labels.FirstOrDefault(X => X.Id == lastRecord.LabelId)!.Name;
+                StatsSelectedProject = project;
             }
         }
     }
@@ -222,7 +228,7 @@ public partial class MainViewModel : ViewModelBase
                     .Where(r => r.TimeEnd.HasValue)
                     .Sum(r => (r.TimeEnd!.Value - r.TimeStart).Ticks);
 
-                return new ProjectSummary(p.Name, new TimeSpan(totalTicks));
+                return new ProjectSummary(p.Id, p.Name, new TimeSpan(totalTicks));
             })
             .OrderByDescending(r => r.TotalTime);
 
@@ -247,15 +253,17 @@ public partial class MainViewModel : ViewModelBase
     public void CancelAction() => IsConfirmOpen = false;
 
     [RelayCommand]
-    public void DeleteProject(Project project)
+    public void DeleteProject(ProjectSummary projectSummary)
     {
         RequestConfirmation(
-            $"Are you sure you want to delete project '{project.Name}' and all its recorded time?",
+            $"Are you sure you want to delete project '{projectSummary.Name}' and all its recorded time?",
             () =>
             {
                 try
                 {
+                    var project = Projects.First(x => x.Id == projectSummary.Id);
                     _repository.DeleteProject(project.Id);
+
                     Projects.Remove(project);
                     if (StatsSelectedProject == project)
                         StatsSelectedProject = null;

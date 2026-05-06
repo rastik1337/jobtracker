@@ -25,19 +25,75 @@
 		</StackPanel>
 
 		<DockPanel IsVisible="{Binding !IsTracking}">
-			<TextBlock DockPanel.Dock="Top" Text="Overview" FontSize="24" FontWeight="Bold" Margin="0,0,0,16"/>
-			<ScrollViewer AllowAutoHide="False">
-				<ListBox ItemsSource="{Binding ProjectSummaries}" Background="#ffc193" BorderThickness="0" CornerRadius="8">
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<DockPanel Margin="10">
-								<TextBlock FontSize="20" Text="{Binding TotalTime, StringFormat=\{0:hh\\:mm\\:ss\}}" DockPanel.Dock="Right" FontWeight="Bold"/>
-								<TextBlock FontSize="16" Text="{Binding Name}" FontWeight="SemiBold"/>
-							</DockPanel>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
+		<TabControl DockPanel.Dock="Top">
+		    <TabItem Header="Overview" FontWeight="Bold">
+			<ScrollViewer AllowAutoHide="False" Margin="0,16,0,0">
+			    <ListBox ItemsSource="{Binding ProjectSummaries}" Background="#ffc193" BorderThickness="0" CornerRadius="8">
+				<ListBox.ItemTemplate>
+				    <DataTemplate>
+					<DockPanel>
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="16" Margin="0,16,0,0" DockPanel.Dock="Right">
+							<TextBlock FontSize="20" Text="{Binding TotalTime, StringFormat=\{0:hh\\:mm\\:ss\}}" FontWeight="Bold"/>
+
+							<Button Content="Delete" 
+							Command="{Binding #ContentControl.((vm:MainViewModel)DataContext).DeleteProjectCommand}"
+							CommandParameter="{Binding}"
+							Classes="button-discard"
+							FontWeight="Medium" Background="#FF8383" />
+						</StackPanel>
+					    <TextBlock FontSize="16" Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+					</DockPanel>
+				    </DataTemplate>
+				</ListBox.ItemTemplate>
+			    </ListBox>
 			</ScrollViewer>
+		    </TabItem>
+
+		    <TabItem Header="Stats" FontWeight="Bold">
+			<StackPanel Spacing="16" Margin="0,16,0,0">
+			    <UniformGrid Columns="2">
+				<StackPanel Margin="0,0,8,0">
+				    <TextBlock Text="Select Project" Opacity="0.6"/>
+				    <ComboBox ItemsSource="{Binding Projects}" SelectedItem="{Binding StatsSelectedProject}" 
+					      DisplayMemberBinding="{Binding Name}" HorizontalAlignment="Stretch"/>
+				</StackPanel>
+				<StackPanel Margin="8,0,0,0">
+				    <TextBlock Text="Date Range" Opacity="0.6"/>
+				    <ComboBox ItemsSource="{Binding DateRanges}" SelectedItem="{Binding SelectedDateRange}" 
+					      HorizontalAlignment="Stretch"/>
+				</StackPanel>
+			    </UniformGrid>
+
+				<Border Background="#ffc193" CornerRadius="8" Padding="8">
+				    <StackPanel>
+					    <TextBlock IsVisible="{Binding !IsStatsProjectSelected}" Text="No project selected" FontWeight="SemiBold" Opacity="0.6"/>
+
+					    <StackPanel IsVisible="{Binding IsStatsProjectSelected}">
+						<Grid ColumnDefinitions="*, Auto" Margin="8,8,8,12">
+						    <TextBlock Grid.Column="0" Text="Label" FontWeight="SemiBold" Opacity="0.6"/>
+						    <TextBlock Grid.Column="1" Text="Total Time" FontWeight="SemiBold" Opacity="0.6" MinWidth="80" TextAlignment="Right"/>
+						</Grid>
+
+						<Rectangle Height="1" Fill="#E0E0E0" Margin="0,0,0,8"/>
+
+						<ItemsControl ItemsSource="{Binding LabelSummaries}">
+						    <ItemsControl.ItemTemplate>
+							<DataTemplate>
+							    <Grid ColumnDefinitions="*, Auto" Margin="8,6">
+								<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
+								<TextBlock Grid.Column="1" Text="{Binding TotalTime, StringFormat=\{0:hh\\:mm\\:ss\}}" 
+									   VerticalAlignment="Center" MinWidth="80" TextAlignment="Right"/>
+							    </Grid>
+							</DataTemplate>
+						    </ItemsControl.ItemTemplate>
+						</ItemsControl>
+					    </StackPanel>
+				    </StackPanel>
+				</Border>
+
+			</StackPanel>
+		    </TabItem>
+		</TabControl>
 		</DockPanel>
 	</Panel>
 </UserControl>
