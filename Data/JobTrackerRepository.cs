@@ -91,12 +91,31 @@ public class JobTrackerRepository : IDisposable
         return _timeRecords.Find(x => x.ProjectId == projectId);
     }
 
+    public void DeleteProject(int id)
+    {
+        var project =
+            _projects.FindById(id)
+            ?? throw new KeyNotFoundException("Project with this id does not exist");
+
+        _timeRecords.DeleteMany(x => x.ProjectId == id);
+        _projects.Delete(id);
+    }
+
     public IEnumerable<Label> GetAllLabels() => _labels.FindAll();
 
     public Label InsertLabel(Label label)
     {
         _labels.Insert(label);
         return label;
+    }
+
+    public void DeleteLabel(int id)
+    {
+        var label =
+            _labels.FindById(id)
+            ?? throw new KeyNotFoundException("Label with this id does not exist");
+        _timeRecords.DeleteMany(x => x.LabelId == id);
+        _labels.Delete(id);
     }
 
     public IEnumerable<TimeRecord> GetAllTimeRecords() => _timeRecords.FindAll();
