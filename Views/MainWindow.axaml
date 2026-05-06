@@ -11,8 +11,27 @@
 		WindowStartupLocation="CenterScreen"
 		Background="#ffedce">
 
-	<DockPanel>
-		<jobtracker:Controls DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" />
-		<jobtracker:Content />
-	</DockPanel>
+	<Panel>
+		<DockPanel>
+			<jobtracker:Controls DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" />
+			<jobtracker:Content />
+		</DockPanel>
+
+		<Border IsVisible="{Binding IsConfirmOpen}" Background="#80000000" ZIndex="100">
+			<Border Background="White" CornerRadius="8" Padding="24" 
+			HorizontalAlignment="Center" VerticalAlignment="Center" 
+			MaxWidth="400" BoxShadow="0 4 8 0 #40000000">
+			    <StackPanel Spacing="16">
+				<TextBlock Text="Confirm Action" FontSize="20" FontWeight="Bold"/>
+				<TextBlock Text="{Binding ConfirmMessage}" TextWrapping="Wrap"/>
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+				    <Button Content="Cancel" Command="{Binding CancelActionCommand}" />
+				    <Button Content="Confirm" Command="{Binding ConfirmActionCommand}" 
+					    Classes="button-discard"
+					    Background="#FF8383" Foreground="White"/>
+				</StackPanel>
+			    </StackPanel>
+			</Border>
+		</Border>
+	</Panel>
 </Window>
