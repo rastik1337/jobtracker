@@ -80,9 +80,9 @@
 						    <ItemsControl.ItemTemplate>
 							<DataTemplate>
 							    <Grid ColumnDefinitions="*, Auto" Margin="8,6">
-								<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
+								<TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold"/>
 								<TextBlock Grid.Column="1" Text="{Binding TotalTime, StringFormat=\{0:hh\\:mm\\:ss\}}" 
-									   VerticalAlignment="Center" MinWidth="80" TextAlignment="Right"/>
+									   VerticalAlignment="Center" MinWidth="80" TextAlignment="Right" FontWeight="Bold"/>
 							    </Grid>
 							</DataTemplate>
 						    </ItemsControl.ItemTemplate>
