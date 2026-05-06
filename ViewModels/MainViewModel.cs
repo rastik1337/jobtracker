@@ -137,7 +137,7 @@ public partial class MainViewModel : ViewModelBase
     {
         var summaries = _repository.GetAllProjects().Select(p =>
         {
-            var records = _repository.GetRecordsForProject(p.Id);
+            var records = _repository.GetRecordsForProject(p.Id, null);
             var totalTicks = records
                 .Where(r => r.TimeEnd.HasValue)
                 .Sum(r => (r.TimeEnd!.Value - r.TimeStart).Ticks);

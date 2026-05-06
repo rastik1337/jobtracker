@@ -86,9 +86,14 @@ public class JobTrackerRepository : IDisposable
         return project;
     }
 
-    public IEnumerable<TimeRecord> GetRecordsForProject(int projectId)
+    public IEnumerable<TimeRecord> GetRecordsForProject(int projectId, DateTime? from)
     {
-        return _timeRecords.Find(x => x.ProjectId == projectId);
+        var query = _timeRecords.Query().Where(x => x.ProjectId == projectId);
+        if (from.HasValue)
+        {
+            query = query.Where(x => x.TimeStart >= from.Value);
+        }
+        return query.ToEnumerable();
     }
 
     public void DeleteProject(int id)
