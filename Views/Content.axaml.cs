@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace jobtracker;
+namespace JobTracker;
 
 public partial class Content : UserControl
 {

@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace jobtracker;
+namespace JobTracker;
 
 public partial class Controls : UserControl
 {

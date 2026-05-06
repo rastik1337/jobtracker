@@ -1,7 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:vm="using:JobTracker.ViewModels"
-		xmlns:jobtracker="using:jobtracker"
+		xmlns:jobtracker="using:JobTracker"
 		x:Class="JobTracker.Views.MainWindow"
 		x:DataType="vm:MainViewModel"
 		Title="JobTracker"

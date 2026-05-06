@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:vm="using:JobTracker.ViewModels"
-			 x:Class="jobtracker.Controls"
+			 x:Class="JobTracker.Controls"
 			 x:DataType="vm:MainViewModel">
 	<StackPanel Margin="32" Spacing="16">
 		<StackPanel Spacing="8" IsVisible="{Binding !IsTracking}">
