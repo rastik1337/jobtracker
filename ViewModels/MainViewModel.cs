@@ -53,8 +53,11 @@ public partial class MainViewModel : ViewModelBase
     public enum DateRange
     {
         AllTime,
-        ThreeMonths,
+        PrevQuarter,
+        Quarter,
+        PrevMonth,
         Month,
+        PrevWeek,
         Week,
     }
 
@@ -122,15 +125,57 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
 
-        DateTime? from = SelectedDateRange switch
-        {
-            DateRange.Week => DateTime.Now.AddDays(-7),
-            DateRange.Month => DateTime.Now.AddMonths(-1),
-            DateRange.ThreeMonths => DateTime.Now.AddMonths(-3),
-            _ => null,
-        };
+        DateTime now = DateTime.Now;
+        DateTime? from = null;
+        DateTime? to = null;
 
-        var records = _repository.GetRecordsForProject(StatsSelectedProject.Id, from);
+        DateTime weekStart;
+        int quarterIndex;
+        DateTime quarterFirstDay;
+        switch (SelectedDateRange)
+        {
+            case DateRange.Week:
+                weekStart = now.Date.AddDays(-(int)now.DayOfWeek);
+                from = weekStart;
+                to = now;
+                break;
+            case DateRange.PrevWeek:
+                weekStart = now.Date.AddDays(-(int)now.DayOfWeek);
+                from = weekStart.AddDays(-7);
+                to = weekStart;
+                break;
+            case DateRange.Month:
+                from = new DateTime(now.Year, now.Month, 1);
+                to = now;
+                break;
+            case DateRange.PrevMonth:
+                var monthFirstDay = new DateTime(now.Year, now.Month, 1);
+                from = monthFirstDay.AddMonths(-1);
+                to = monthFirstDay;
+                break;
+            case DateRange.Quarter:
+                quarterIndex = (now.Month - 1) / 3;
+                quarterFirstDay = new DateTime(now.Year, quarterIndex * 3 + 1, 1);
+                from = quarterFirstDay;
+                to = now;
+                break;
+            case DateRange.PrevQuarter:
+                quarterIndex = (now.Month - 1) / 3;
+                quarterFirstDay = new DateTime(now.Year, quarterIndex * 3 + 1, 1);
+                from = quarterFirstDay.AddMonths(-3);
+                to = quarterFirstDay;
+                break;
+            case DateRange.AllTime:
+            default:
+                from = null;
+                to = null;
+                break;
+        }
+
+        var records = _repository
+            .GetRecordsForProject(StatsSelectedProject.Id)
+            .Where(r => (from == null || r.TimeStart >= from) && (to == null || r.TimeStart < to));
+
         var labelGroups = records
             .GroupBy(r => r.LabelId)
             .Select(g =>
