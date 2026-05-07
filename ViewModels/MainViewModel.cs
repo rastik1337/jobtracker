@@ -297,26 +297,4 @@ public partial class MainViewModel : ViewModelBase
             }
         );
     }
-
-    [RelayCommand]
-    public void DeleteLabel(Label label)
-    {
-        RequestConfirmation(
-            $"Are you sure you want to delete label '{label.Name}' and all its recorded time?",
-            () =>
-            {
-                try
-                {
-                    _repository.DeleteLabel(label.Id);
-                    Labels.Remove(label);
-                    UpdateStatistics();
-                }
-                catch (Exception ex)
-                {
-                    ConfirmMessage = $"Failed to delete label: {ex.Message}";
-                    IsConfirmOpen = true;
-                }
-            }
-        );
-    }
 }

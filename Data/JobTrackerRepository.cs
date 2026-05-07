@@ -127,15 +127,6 @@ public class JobTrackerRepository : IDisposable
         return label;
     }
 
-    public void DeleteLabel(int id)
-    {
-        var label =
-            _labels.FindById(id)
-            ?? throw new KeyNotFoundException("Label with this id does not exist");
-        _timeRecords.DeleteMany(x => x.LabelId == id);
-        _labels.Delete(id);
-    }
-
     public IEnumerable<TimeRecord> GetAllTimeRecords() => _timeRecords.FindAll();
 
     public void DeleteTimeRecord(int id) => _timeRecords.Delete(id);
