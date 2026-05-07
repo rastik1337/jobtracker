@@ -233,7 +233,6 @@ public partial class MainViewModel : ViewModelBase
             .OrderByDescending(r => r.TotalTime);
 
         ProjectSummaries = new ObservableCollection<ProjectSummary>(summaries);
-        RefreshLabels();
     }
 
     private void RefreshLabels()
@@ -288,6 +287,7 @@ public partial class MainViewModel : ViewModelBase
                     if (StatsSelectedProject == project)
                         StatsSelectedProject = null;
                     LoadProjectSummaries();
+                    RefreshLabels();
                 }
                 catch (Exception ex)
                 {
